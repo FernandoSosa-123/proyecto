@@ -1,0 +1,21 @@
+ub1 ansible_host=192.168.1.10
+ub2 ansible_host=192.168.1.20
+centos01 ansible_host=192.168.1.30
+
+[ubuntu]
+ub2
+ub1
+
+[centos]
+centos01
+
+[webserver]
+ub1
+
+[database]
+ub2
+centos01
+
+[linux:children]
+ubuntu
+centos
