@@ -10,7 +10,8 @@ ub1
 centos01
 
 [webserver]
-ub1
+ub2
+centos01
 
 [database]
 ub2

@@ -1,0 +1,42 @@
+---
+- name: Test
+  hosts: webserver
+  user: sysadmin
+  become: yes
+
+  tasks:
+
+    - name: Paquete este presente http (centos)
+      yum:
+        pkg: httpd
+        state: present
+      when: ansible_facts['os_family'] == 'Redhat'
+
+
+    - name: Paquete este presente http (ubuntu)
+      apt:
+        pkg: apache2
+        state: present
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Ultimo index.html presente
+      copy:
+        src: ./files/index.html
+        dest: /var/www/html/index.html
+      notify: Reiniciar httpd
+
+    
+    - name: Permitir http en firewall
+      ansible.posix.firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+        offline: true
+      when: ansible_facts['os_family'] == 'Redhat'
+
+  handlers: 
+    - name: Reiniciar httpd
+      service:
+        name: httpd
+        state: started
