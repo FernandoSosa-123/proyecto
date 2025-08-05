@@ -1,4 +1,4 @@
-ub1 ansible_host=192.168.1.10
+ub1 ansible_host=192.168.1.10 
 ub2 ansible_host=192.168.1.20
 centos01 ansible_host=192.168.1.30
 
@@ -6,8 +6,17 @@ centos01 ansible_host=192.168.1.30
 ub2
 ub1
 
+[ubuntu:vars]
+ssh_service=ssh
+
 [centos]
 centos01
+
+[centos:vars]
+ssh_service=sshd
+
+[workstation]
+ub1
 
 [webserver]
 ub2
