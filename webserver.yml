@@ -9,15 +9,18 @@
     - name: Paquete este presente http (centos)
       yum:
         pkg: httpd
-        state: present
+        state: latest
       when: ansible_facts['os_family'] == 'Redhat'
+      notify: Reiniciar httpd
 
 
     - name: Paquete este presente http (ubuntu)
       apt:
         pkg: apache2
-        state: present
+        state: latest
       when: ansible_facts['os_family'] == 'Debian'
+      notify: Reiniciar apache2
+
 
     - name: Ultimo index.html presente
       copy:
@@ -35,8 +38,37 @@
         offline: true
       when: ansible_facts['os_family'] == 'Redhat'
 
+
+
+    - name: Habilitar puerto SSSH/22 en ufw
+      community.general.ufw:
+        rule: allow
+        port: ssh
+        proto: tcp
+        state: enabled
+      when: ansible_facts['os_family'] == 'Debian'
+
+
+    - name: Habilitar puerto HTTP/80 en ufw
+      community.general.ufw:
+        rule: allow
+        port: http
+        proto: tcp
+        state: enabled
+      when: ansible_facts['os_family'] == 'Debian'
+
+
+
   handlers: 
     - name: Reiniciar httpd
       service:
         name: httpd
-        state: started
+        state: restarted
+      when: ansible_facts['os_family'] == 'Redhat'
+
+
+    - name: Reiniciar apache2
+      service:
+        name: apache2
+        state: restarted
+      when: ansible_facts['os_family'] == 'Debian'
