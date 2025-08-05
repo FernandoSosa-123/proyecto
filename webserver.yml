@@ -6,22 +6,13 @@
 
   tasks:
 
-    - name: Paquete este presente http (centos)
-      yum:
-        pkg: httpd
+    - name: Paquete este apache
+      ansible.builtin.package:
+        name: "{{ apache_service }}"
         state: latest
-      when: ansible_facts['os_family'] == 'Redhat'
       notify: Reiniciar httpd
 
-
-    - name: Paquete este presente http (ubuntu)
-      apt:
-        pkg: apache2
-        state: latest
-      when: ansible_facts['os_family'] == 'Debian'
-      notify: Reiniciar apache2
-
-
+    
     - name: Ultimo index.html presente
       copy:
         src: ./files/index.html
@@ -37,7 +28,6 @@
         immediate: true
         offline: true
       when: ansible_facts['os_family'] == 'Redhat'
-
 
 
     - name: Habilitar puerto SSSH/22 en ufw
@@ -62,13 +52,6 @@
   handlers: 
     - name: Reiniciar httpd
       service:
-        name: httpd
+        name: "{{ apache_service }}"
         state: restarted
-      when: ansible_facts['os_family'] == 'Redhat'
-
-
-    - name: Reiniciar apache2
-      service:
-        name: apache2
-        state: restarted
-      when: ansible_facts['os_family'] == 'Debian'
+ 
