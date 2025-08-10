@@ -1,11 +1,37 @@
 ---
 - name: Hardening
   hosts: webserver
-  user: sysadmin
+  user: "{{ ansible_use }}"
   become: yes
   gather_facts: no
 
   tasks:
+
+    - name: Actualizacion del cache con intervalo de una hora
+        ansible.builtin.apt:
+          update_cache: yes
+          cache_valid_time: 3600
+          
+          
+    - name: Actualiza todos los paquetes
+       ansible.builtin.apt:
+        name: "*"
+        state: latest
+        
+
+    - name: UFW politica de negar trafico entrante
+      community.general.ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+        
+
+    - name: UFW politica de permitir SSH entrante
+      community.general.ufw:
+        rule: allow
+        name: OpenSSH
+        direction: incoming
+        
 
     - name: Deshabilitar el usuario ROOT para login
       ansible.builtin.lineinfile:
